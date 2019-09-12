@@ -1,5 +1,7 @@
 package action;
 
+import command.Command;
+import command.CommandController;
 import org.telegram.telegrambots.ApiContextInitializer;
 import org.telegram.telegrambots.TelegramBotsApi;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
@@ -9,13 +11,14 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
 import org.telegram.telegrambots.exceptions.TelegramApiRequestException;
 
-public class Bot extends TelegramLongPollingBot {
-    public static void main(String[] args) {
+public class BotManagement extends TelegramLongPollingBot {
+
+    public static void initBot() {
         ApiContextInitializer.init();
         TelegramBotsApi telegramBotsApi = new TelegramBotsApi();
 
         try {
-            telegramBotsApi.registerBot(new Bot());
+            telegramBotsApi.registerBot(new BotManagement());
         } catch (TelegramApiRequestException e) {
             e.printStackTrace();
         }
@@ -23,13 +26,9 @@ public class Bot extends TelegramLongPollingBot {
 
     public void onUpdateReceived(Update update) {
         Message message = update.getMessage();
-        if (message != null && message.hasText()) {
-            if (message.getText().equals("/help")) {
-                sendMsg(message, "TEST");
-            } else {
-                sendMsg(message, "Test2fail");
-            }
-        }
+        Command command = CommandController.defineCommand(message);
+        String text = command.execute();
+        sendMsg(message, text);
     }
 
     private void sendMsg(Message message, String s) {
