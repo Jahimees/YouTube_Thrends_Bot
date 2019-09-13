@@ -7,6 +7,7 @@ import org.telegram.telegrambots.TelegramBotsApi;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.Message;
 import org.telegram.telegrambots.api.objects.Update;
+import org.telegram.telegrambots.api.objects.User;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
 import org.telegram.telegrambots.exceptions.TelegramApiRequestException;
@@ -25,10 +26,18 @@ public class BotManagement extends TelegramLongPollingBot {
     }
 
     public void onUpdateReceived(Update update) {
+
         Message message = update.getMessage();
+        User user = message.getFrom();
+        System.out.println(user.getId());
         Command command = CommandController.defineCommand(message);
         String text = command.execute();
         sendMsg(message, text);
+    }
+
+    public void getUser(){
+        User user = new User();
+
     }
 
     private void sendMsg(Message message, String s) {
