@@ -1,17 +1,8 @@
 package entity;
 
-public class User {
+public class User implements Entity {
     private String firstname;
-    private String lastname;
-    private int id;
-
-    public String getLastname() {
-        return lastname;
-    }
-
-    public void setLastname(String lastname) {
-        this.lastname = lastname;
-    }
+    private int idUser;
 
     public String getFirstname() {
         return firstname;
@@ -21,11 +12,11 @@ public class User {
         this.firstname = firstname;
     }
 
-    public int getId() {
-        return id;
+    public int getIdUser() {
+        return idUser;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setIdUser(int idUser) {
+        this.idUser = idUser;
     }
 }
