@@ -1,5 +1,7 @@
 package entity;
 
+import java.sql.PreparedStatement;
+
 public abstract class Constant {
     public static final String MAX_RESULT = "maxResults=10";
     public static final String YOUTUBE_KEY = "key=AIzaSyDCJh3y0HNKissvtz06kG3gEEQvYPF-r98";
@@ -16,4 +18,5 @@ public abstract class Constant {
     public static final String USER = "root";
     public static final String PASSWORD = "123";
     public static final String DRIVER = "com.mysql.jdbc.Driver";
+
 }

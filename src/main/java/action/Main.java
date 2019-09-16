@@ -1,6 +1,9 @@
 package action;
 
 import connection.ConnectionPool;
+import dao.InitStatement;
+import dao.UserDAO;
+import entity.User;
 
 import javax.swing.plaf.nimbus.State;
 import java.io.IOException;
@@ -16,12 +19,19 @@ public class Main {
        StringBuilder builder = connectionManagment.sendRequest(connectionManagment.getConnection());
 
 //        try {
-//            Connection connection = ConnectionPool.getInstance().retrieve();
-//            Statement state = connection.createStatement();
-//            state.execute("INSERT INTO user (idUser, firstname) VALUES (1, 'hello')");
+//            InitStatement.initStatements();
+//            UserDAO userDAO = new UserDAO();
+//            User user = new User();
+//            user.setIdUser(3);
+//            user.setFirstname("hi");
+//            userDAO.create(user);
+//
+//            User newUser = (User) userDAO.get(user.getIdUser());
+//            System.out.println(newUser.getFirstname());
 //        } catch (SQLException e) {
 //            e.printStackTrace();
 //        }
+
 
 
     }
