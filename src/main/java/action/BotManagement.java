@@ -2,6 +2,7 @@ package action;
 
 import command.Command;
 import command.CommandController;
+import command.ThrendsCommand;
 import org.telegram.telegrambots.ApiContextInitializer;
 import org.telegram.telegrambots.TelegramBotsApi;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
@@ -12,9 +13,11 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
 import org.telegram.telegrambots.exceptions.TelegramApiRequestException;
 
+
 public class BotManagement extends TelegramLongPollingBot {
 
     public static void initBot() {
+
         ApiContextInitializer.init();
         TelegramBotsApi telegramBotsApi = new TelegramBotsApi();
 
@@ -26,19 +29,35 @@ public class BotManagement extends TelegramLongPollingBot {
     }
 
     public void onUpdateReceived(Update update) {
-
         Message message = update.getMessage();
-        User user = message.getFrom();
-        System.out.println(user.getId());
+        User user = message.getFrom();//////
+        System.out.println(user.getId());/////
         Command command = CommandController.defineCommand(message);
-        String text = command.execute();
-        sendMsg(message, text);
+        String text;
+        if (command.getClass() == ThrendsCommand.class) {
+            text = command.execute();
+            String[] videos = text.split("╞");
+            for (int i = 0; i < videos.length; i++) {
+                sendMsg(message, clearMessage(videos[i]));
+            }
+        } else {
+            text = command.execute();
+            sendMsg(message, text);
+        }
+
     }
 
-    public void getUser(){
-        User user = new User();
-
+    private String clearMessage(String dirty) {
+        return dirty.replace("_", "\\_")
+                .replace("*", "\\*")
+                .replace("[", "\\[")
+                .replace("`", "\\`");
     }
+
+//    public void getUser(){
+//        User user = new User();
+//
+//    }
 
     private void sendMsg(Message message, String s) {
         SendMessage sendMessage = new SendMessage();
@@ -47,7 +66,7 @@ public class BotManagement extends TelegramLongPollingBot {
         sendMessage.setReplyToMessageId(message.getMessageId());
         sendMessage.setText(s);
         try {
-            sendMessage(sendMessage);
+            execute(sendMessage);
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }

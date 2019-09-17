@@ -3,6 +3,6 @@ package command;
 public class RemoveTagCommand implements Command {
 
     public String execute() {
-        return "Remove illegal tag...";
+        return " https://www.youtube.com/watch?v=vR5cHU4ykeA ";
     }
 }

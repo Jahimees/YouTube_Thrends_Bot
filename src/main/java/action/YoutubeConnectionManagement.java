@@ -44,7 +44,6 @@ public class YoutubeConnectionManagement {
                     builder.append(line);
                     builder.append("\n");
                 }
-                System.out.println(builder.toString());
                 return builder;
             } else {
                 System.out.println("Error" + connection.getResponseMessage() + " " + connection.getResponseCode());

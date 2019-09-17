@@ -1,22 +1,13 @@
 package action;
 
-import connection.ConnectionPool;
-import dao.InitStatement;
-import dao.UserDAO;
-import entity.User;
+import entity.Video;
 
-import javax.swing.plaf.nimbus.State;
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.util.ArrayList;
 
 public class Main {
     public static void main(String[] args) {
        BotManagement.initBot();
-       YoutubeConnectionManagement connectionManagment = null;
-       connectionManagment = new YoutubeConnectionManagement();
-       StringBuilder builder = connectionManagment.sendRequest(connectionManagment.getConnection());
+
 
 //        try {
 //            InitStatement.initStatements();
