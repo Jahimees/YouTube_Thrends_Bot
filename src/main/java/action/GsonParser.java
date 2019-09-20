@@ -7,6 +7,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 
 public class GsonParser {
@@ -14,7 +15,7 @@ public class GsonParser {
     private String channelId;
     private String channelTitle;
     private String idVideo;
-    private ArrayList<String> tags;
+    private HashSet<String> tags;
 
     private String imageUrl;
     private long viewCount;
@@ -62,7 +63,12 @@ public class GsonParser {
         title = snippet.get("title").toString();
         channelId = snippet.get("channelId").toString();
         channelTitle = snippet.get("channelTitle").toString();
-        tags = (JSONArray) snippet.get("tags");
+        ArrayList<String> tagsArr = (JSONArray) snippet.get("tags");
+        tags = new HashSet<>();
+        for (String tag : tagsArr) {
+            tags.add(tag);
+        }
+
         imageUrl = ((JSONObject)
                 ((JSONObject) snippet.get("thumbnails")).
                                         get("standard")).

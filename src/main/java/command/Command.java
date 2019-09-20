@@ -1,5 +1,7 @@
 package command;
 
+import action.BotManagement;
+
 public interface Command {
-    String execute();
+    void execute(BotManagement botManagement);
 }

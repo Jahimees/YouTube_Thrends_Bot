@@ -1,6 +1,8 @@
 package entity;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Video {
     private String idVideo;
@@ -8,7 +10,7 @@ public class Video {
     private String imgUrl;
     private String channelId;
     private String channelTitle;
-    private ArrayList<String> tags = new ArrayList<String>();
+    private Set<String> tags = new HashSet<>();
     private long viewCount;
     private long likeCount;
     private long dislikeCount;
@@ -62,11 +64,11 @@ public class Video {
         this.viewCount = viewCount;
     }
 
-    public ArrayList<String> getTags() {
+    public Set<String> getTags() {
         return tags;
     }
 
-    public void setTags(ArrayList<String> tags) {
+    public void setTags(Set<String> tags) {
         this.tags = tags;
     }
 
@@ -88,10 +90,14 @@ public class Video {
 
     @Override
     public String toString(){
+        String tagsStr = "";
+        for (String tag1 : tags) {
+            tagsStr+=tag1 + ", ";
+        }
         String result = "Title: " + title + "\n" +
                         "Url video: " + idVideo + "\n" +
                         "Channel Title: " + channelTitle + "\n" +
-                        "Channel Id: " + channelId + "\n" +
+                        "Tags: " + tagsStr + "\n" +
                         "View count: " + viewCount + "\n" +
                         "Like count: " + likeCount + "\n" +
                         "Dislike count: " + dislikeCount + "\n" +

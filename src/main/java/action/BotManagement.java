@@ -1,20 +1,19 @@
 package action;
 
-import command.Command;
-import command.CommandController;
-import command.ThrendsCommand;
+import command.*;
+import entity.BannedChannel;
 import org.telegram.telegrambots.ApiContextInitializer;
 import org.telegram.telegrambots.TelegramBotsApi;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.Message;
 import org.telegram.telegrambots.api.objects.Update;
-import org.telegram.telegrambots.api.objects.User;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
 import org.telegram.telegrambots.exceptions.TelegramApiRequestException;
 
 
 public class BotManagement extends TelegramLongPollingBot {
+    private static volatile Message message;
 
     public static void initBot() {
 
@@ -28,38 +27,64 @@ public class BotManagement extends TelegramLongPollingBot {
         }
     }
 
+    public static Message getMessage() {
+        return message;
+    }
+
+    public static void setMessage(Message message) {
+        BotManagement.message = message;
+    }
+
     public void onUpdateReceived(Update update) {
         Message message = update.getMessage();
-        User user = message.getFrom();//////
-        System.out.println(user.getId());/////
-        Command command = CommandController.defineCommand(message);
-        String text;
-        if (command.getClass() == ThrendsCommand.class) {
-            text = command.execute();
-            String[] videos = text.split("╞");
-            for (int i = 0; i < videos.length; i++) {
-                sendMsg(message, clearMessage(videos[i]));
+        setMessage(message);
+        String anotherCommand = getAnotherCommmand();
+        switch (anotherCommand) {
+            case "addIllegalFlag": {
+                AddIllegalTag addIllegalTag = new AddIllegalTag();
+                addIllegalTag.execute(this);
+                break;
             }
-        } else {
-            text = command.execute();
-            sendMsg(message, text);
+            case "removeIllegalTag": {
+                RemoveTag removeTag = new RemoveTag();
+                removeTag.execute(this);
+                break;
+            }
+            case "banChannel": {
+                BanChannel banChannel = new BanChannel();
+                banChannel.execute(this);
+                break;
+            }
+            case "unbanChannel": {
+                UnbanChannel unbanChannel = new UnbanChannel();
+                unbanChannel.execute(this);
+                break;
+            }
+            default: {
+                Command command = CommandController.defineCommand(message);
+                command.execute(this);
+            }
         }
-
     }
 
-    private String clearMessage(String dirty) {
-        return dirty.replace("_", "\\_")
-                .replace("*", "\\*")
-                .replace("[", "\\[")
-                .replace("`", "\\`");
+    private String getAnotherCommmand() {
+        if (Flag.isAddIllegalTagFlag()) {
+            Flag.setAddIllegalTagFlag(false);
+            return "addIllegalFlag";
+        } else if (Flag.isRemoveTagFlag()) {
+            Flag.setRemoveTagFlag(false);
+            return "removeIllegalTag";
+        } else if(Flag.isBanChannelFlag()) {
+            Flag.setBanChannelFlag(false);
+            return "banChannel";
+        } else if(Flag.isUnbanChannelFlag()) {
+            Flag.setUnbanChannelFlag(false);
+            return "unbanChannel";
+        }
+        return "no";
     }
 
-//    public void getUser(){
-//        User user = new User();
-//
-//    }
-
-    private void sendMsg(Message message, String s) {
+    public void sendMsg(Message message, String s) {
         SendMessage sendMessage = new SendMessage();
         sendMessage.enableMarkdown(true);
         sendMessage.setChatId(message.getChatId().toString());
@@ -73,7 +98,7 @@ public class BotManagement extends TelegramLongPollingBot {
     }
 
     public String getBotUsername() {
-        return "NAME_OF_BOT";
+        return "YOUTUBE_THRENDS";
     }
 
     public String getBotToken() {

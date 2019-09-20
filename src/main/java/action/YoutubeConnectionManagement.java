@@ -1,5 +1,9 @@
 package action;
 
+import dao.DAOExecutor;
+import entity.MyUser;
+import org.telegram.telegrambots.api.objects.User;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -56,4 +60,25 @@ public class YoutubeConnectionManagement {
         return null;
     }
 
+    public abstract static class UserRegistration {
+
+        public static MyUser checkUserForExists(User user) {
+            DAOExecutor daoExecutor = new DAOExecutor();
+
+            MyUser myUser = new MyUser();
+            if (!daoExecutor.checkUserInBase(user.getId())) {
+                daoExecutor.createNewUser(user.getId(), user.getFirstName());
+                myUser.setIdUser(user.getId());
+                myUser.setFirstname(user.getFirstName());
+                System.out.println("Создан новый пользователь");
+            } else {
+
+                myUser.setIdUser(user.getId());
+                myUser.setFirstname(user.getFirstName());
+                System.out.println("Такой у меня есть");
+            }
+            return myUser;
+        }
+
+    }
 }

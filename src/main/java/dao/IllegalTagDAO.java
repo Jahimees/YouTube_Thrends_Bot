@@ -1,21 +1,26 @@
 package dao;
 
+import connection.ConnectionPool;
 import entity.Entity;
 import entity.IllegalTag;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class IllegalTagDAO implements DAO {
 
 
-    public Entity get(int idIllegalTag, int idUser) {
-        PreparedStatement statement = InitStatement.getGetIllegalTag();
+    public Entity get(String tagStr, int idUser) {
+        ConnectionPool connectionPool = ConnectionPool.getInstance();
+        Connection connection = connectionPool.retrieve();
         IllegalTag tag = new IllegalTag();
 
         try {
-            statement.setInt(1, idIllegalTag);
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM illegal_tag WHERE tag=? AND idUser=?");
+            statement.setString(1, tagStr);
             statement.setInt(2, idUser);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
@@ -25,6 +30,8 @@ public class IllegalTagDAO implements DAO {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            connectionPool.putback(connection);
         }
         return tag;
     }
@@ -38,48 +45,84 @@ public class IllegalTagDAO implements DAO {
         return null;
     }
 
+    public ArrayList<IllegalTag> getAllIllegalTags(int idUser) {
+        ConnectionPool connectionPool = ConnectionPool.getInstance();
+        Connection connection = connectionPool.retrieve();
+        ArrayList<IllegalTag> list = new ArrayList<>();
+        IllegalTag illegalTag;
+
+        try {
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM illegal_tag WHERE idUser=?");
+            statement.setInt(1, idUser);
+            ResultSet resultSet = statement.executeQuery();
+            while(resultSet.next()) {
+                illegalTag = new IllegalTag();
+                illegalTag.setIdIllegalTag(resultSet.getInt("idIllegalTag"));
+                illegalTag.setTag(resultSet.getString("tag"));
+                illegalTag.setIdUser(resultSet.getInt("idUser"));
+                list.add(illegalTag);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            connectionPool.putback(connection);
+        }
+        return list;
+    }
+
     public boolean create(Entity entity) {
-        PreparedStatement statement = InitStatement.getCreateIllegalTag();
+        ConnectionPool connectionPool = ConnectionPool.getInstance();
+        Connection connection = connectionPool.retrieve();
         boolean result = false;
         IllegalTag tag = (IllegalTag) entity;
 
         try {
-            statement.setInt(1, tag.getIdIllegalTag());
-            statement.setString(2, tag.getTag());
-            statement.setInt(3, tag.getIdUser());
+            PreparedStatement statement = connection.prepareStatement("INSERT INTO illegal_tag(tag, idUser) VALUES (?,?)");
+            statement.setString(1, tag.getTag());
+            statement.setInt(2, tag.getIdUser());
             result = statement.execute();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            connectionPool.putback(connection);
         }
         return result;
     }
 
     public boolean delete(Entity entity) {
-        PreparedStatement statement = InitStatement.getDeleteIllegalTag();
+        ConnectionPool connectionPool = ConnectionPool.getInstance();
+        Connection connection = connectionPool.retrieve();
         boolean result = false;
         IllegalTag tag = (IllegalTag) entity;
         try {
-            statement.setInt(1, tag.getIdIllegalTag());
+            PreparedStatement statement = connection.prepareStatement("DELETE FROM illegal_tag WHERE tag=? AND idUser=?");
+            statement.setString(1, tag.getTag());
             statement.setInt(2, tag.getIdUser());
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return false;
-    }
-
-    public boolean update(Entity entity) {
-        PreparedStatement statement = InitStatement.getUpdateIllegalTag();
-        boolean result = false;
-        IllegalTag tag = (IllegalTag) entity;
-
-        try {
-            statement.setInt(1, tag.getIdIllegalTag());
-            statement.setInt(3, tag.getIdUser());
-            statement.setString(2, tag.getTag());
             result = statement.execute();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            connectionPool.putback(connection);
+        }
+
+        return result;
+    }
+
+    public boolean update(Entity entity) {
+        ConnectionPool connectionPool = ConnectionPool.getInstance();
+        Connection connection = connectionPool.retrieve();
+        boolean result = false;
+        IllegalTag tag = (IllegalTag) entity;
+
+        try {
+            PreparedStatement statement = connection.prepareStatement("UPDATE illegal_tag SET tag=?, idUser=?");
+            statement.setInt(2, tag.getIdUser());
+            statement.setString(1, tag.getTag());
+            result = statement.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            connectionPool.putback(connection);
         }
         return result;
     }

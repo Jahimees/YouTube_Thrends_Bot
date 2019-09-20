@@ -1,16 +1,11 @@
 package action;
 
-import entity.Video;
-
-import java.util.ArrayList;
-
 public class Main {
     public static void main(String[] args) {
        BotManagement.initBot();
 
-
 //        try {
-//            InitStatement.initStatements();
+//
 //            UserDAO userDAO = new UserDAO();
 //            User user = new User();
 //            user.setIdUser(3);
